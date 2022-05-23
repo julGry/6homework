@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.1.4'
+
+    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.1.1'
+
+
+    // https://mvnrepository.com/artifact/org.testng/testng
+    testImplementation group: 'org.testng', name: 'testng', version: '7.5'
+
+//    // https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin
+//    implementation group: 'org.apache.maven.plugins', name: 'maven-surefire-plugin', version: '3.0.0-M6'
+
+}
+
+test {
+    useTestNG()
+}
+
+task executeMyTest(type: Test) {
+    useTestNG() {
+        useDefaultListeners = true
+        def condition = System.getProperty("shEx").toString()
+        switch (condition) {
+            case "should":
+                suites 'src/test/suite/my_mega_test.xml'
+                break
+            case "not":
+                break
+        }
+    }
+}
