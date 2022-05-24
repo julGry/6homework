@@ -1,23 +1,17 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
-import java.util.List;
+import pages.FBClassUser;
+import pages.FBRegistrationPage;
+import pages.FBStartPage;
 
 public class HW6FBRegistration {
     WebDriver driver;
-    WebDriverWait wait;
     FBStartPage page1;
     FBRegistrationPage page2;
 
@@ -46,7 +40,6 @@ public class HW6FBRegistration {
         System.setProperty("webdriver.gecko.driver", "/Users/yuliia/IdeaProjects/lesson3/source/geckodriver");
         //driver = new ChromeDriver();
         driver = new FirefoxDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(3000));
     }
 
     @Test(dataProvider = "dp", priority = 1 ) 
@@ -56,20 +49,27 @@ public class HW6FBRegistration {
         page2 = page1.FBStartPageDoRegistration();
     }
 
-    @Test(dataProvider = "inputData", priority = 2, dependsOnMethods = "method1", groups = "input data")
+    @Test(dataProvider = "inputData", dependsOnMethods = "method1")
     public void method2(FBClassUser user) {
         page2.FBRegistrationPageSetUser(user);
     }
     
-    @Test(dataProvider = "inputData", priority = 3, dependsOnMethods = "method2", groups = "check data")
+    @Test(dataProvider = "inputData", dependsOnMethods = "method2")
     public void method3(FBClassUser user) throws InterruptedException {
         Thread.sleep(5000);
-        page2.FBRegistrationPageCheckUser(user);
+        Assert.assertEquals(page2.first_name.getAttribute("value"), user.first_name);
+        Assert.assertEquals(page2.last_name.getAttribute("value"), user.last_name);
+        Assert.assertEquals(page2.reg_email.getAttribute("value"), user.reg_email);
+        Assert.assertEquals(page2.password.getAttribute("value"), user.password);
+        Assert.assertEquals(page2.birth_day.getAttribute("value"), user.birth_day);
+        Assert.assertEquals(page2.birth_month.getAttribute("value"), user.birth_month);
+        Assert.assertEquals(page2.birth_year.getAttribute("value"), user.birth_year);
+        Assert.assertTrue(page2.sex.get(user.sex).isSelected());
     }
 
-    @Test(dataProvider = "inputData", priority = 4, dependsOnMethods = "method2", groups = "check data")
+    @Test(dataProvider = "inputData", dependsOnMethods = "method2")
     public void method4(FBClassUser user) throws InterruptedException {
-        page2.FBRegistrationPageCheckSubmit();
+        Assert.assertTrue(page2.web_submit.isDisplayed());
     }
 
     @AfterTest
