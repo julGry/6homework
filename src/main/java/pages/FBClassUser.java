@@ -1,3 +1,5 @@
+package pages;
+
 public class FBClassUser {
     public String first_name;
     public String last_name;
